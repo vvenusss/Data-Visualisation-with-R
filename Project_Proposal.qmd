@@ -114,7 +114,7 @@ The table below summarises the key differences between the original Tableau dash
 
 All data were sourced directly from the official [World Athletics Championships website](https://worldathletics.org/competitions/world-athletics-championships/world-athletics-championships-tokyo-2025-7190593). Results were collected via manual web scraping and subsequently compiled into a structured spreadsheet for analysis.
 
-The dataset encompasses all medal results for each event held during the 2025 championship, including athlete name, country of representation, performance score, ranking position, event name, event group, gender category, and competition date.
+The dataset encompasses all medal results for each event held during the 2025 championship, including athlete name, country of representation, performance score, ranking position, event name, gender category, and competition date. Sport group classifications are derived programmatically within the visualisation pipeline and are not stored in the raw dataset.
 
 ---
 
@@ -130,11 +130,20 @@ The following steps outline the end-to-end data engineering pipeline employed to
 
 4. Perform initial data cleaning to remove duplicate entries, handle missing values (`NA`), and ensure consistent formatting across all fields.
 
-5. Athletic events are categorised into higher-level sport groups (e.g., Running, Jumping, Throwing, Combined) via a case_when() transformation applied within the R visualisation pipeline, as the raw dataset contains individual event names only.
+5. Athletic events are categorised into higher-level sport groups (e.g., Running, Jumping, Throwing, Combined) via a `case_when()` transformation applied within the R visualisation pipeline, as the raw dataset contains individual event names only. The following table outlines the full event-to-group mapping applied:
+
+| Sport Group | Events Included |
+|---|---|
+| Running | 100M, 200M, 400M, 800M, 1500M, 5000M, 10000M, Marathon, 100M Hurdles, 110M Hurdles, 400M Hurdles, 3000M Steeplechase, 4×100M Relay, 4×400M Relay, 20km Race Walk, 35km Race Walk |
+| Jumping | High Jump, Long Jump, Triple Jump, Pole Vault |
+| Throwing | Shot Put, Discus Throw, Hammer Throw, Javelin Throw |
+| Combined | Decathlon, Heptathlon |
 
 6. Validate and cross-reference the cleaned dataset against official championship results to ensure accuracy and completeness.
 
 7. Export the cleaned dataset in CSV format for use within the Quarto Markdown (.qmd) visualisation pipeline. Medal tallies by country, gender category, and event group are subsequently computed within the R visualisation code using group_by(), summarise(), and expand.grid() transformations at render time.
+
+
 
 ### Dimensions of the Original Visualisation
 | Dimension | Description |
@@ -151,9 +160,11 @@ The following steps outline the end-to-end data engineering pipeline employed to
 |---|---|
 | X-Axis | Event Group (Running, Jumping, Throwing, Combined) |
 | Y-Axis | Number of Medals |
-| Facet Columns | Country (top 3 by total medal count) |
+| Facet Columns | Country (top 4 by total medal count) |
 | Facet Rows | Gender Category (Male, Female, Mixed)|
 | Fill Colour | Medal Type (Gold, Silver, Bronze) |
+
+> **Note:** Individual athletic events are mapped to one of four sport groups (Running, Jumping, Throwing, Combined) within the R visualisation pipeline. Refer to the sport group classification table in the Detailed Workflow section for the full event-to-group mapping.
 
 ---
 
@@ -267,7 +278,7 @@ ggplot(plot_data,
       summarise(Medals = sum(Medals), .groups = "drop"),
     aes(label = ifelse(Medals > 0, Medals, "")),
     position = position_stack(vjust = 0.5),
-    size = 2.5,
+    size = 2,
     colour = "black"
   ) +
   # Vertical dashed lines to separate event groups
@@ -298,7 +309,7 @@ ggplot(plot_data,
     # White background
     plot.background    = element_rect(fill = "white", colour = NA),
     panel.background   = element_rect(fill = "white", colour = NA),
-    strip.background   = element_rect(fill = "#f0f0f0", colour = NA),
+    #strip.background   = element_rect(fill = "#f0f0f0", colour = NA),
 
     # Grid lines — light grey horizontal only
     panel.grid.major.y = element_line(colour = "#e0e0e0"),
@@ -340,7 +351,7 @@ ggplot(plot_data,
 
 ### Country-level analysis of the aggregated medal dataset provides a clearer narrative of national athletic performance across the 2025 World Athletics Championships.
 
-- The USA holds the highest total medal count among the top three nations, which demonstrates its broad competitive strength across multiple event groups.
+- The USA holds the highest total medal count among the top four nations, which demonstrates its broad competitive strength across multiple event groups.
 
 - Kenya's medal distribution is highly concentrated in Running events, which indicates a national specialisation rather than diversified athletic strength.
 
@@ -352,7 +363,7 @@ ggplot(plot_data,
 
 - Kenya's medal distribution shows stronger representation in specific gender-event combinations within the Running event.
 
-- Mixed-category contribute to a smaller proportion of medals across the top three countries.
+- Mixed-category events contribute to a smaller proportion of medals across the top four countries.
 
 
 ---
