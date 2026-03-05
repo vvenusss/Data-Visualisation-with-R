@@ -31,18 +31,17 @@ execute:
 
 ## Chosen Visualisation and Story
 
-The selected data visualisation presents a comprehensive overview of the events and medal results from the 2025 World Athletics Championships, held in Tokyo, Japan. The competition encompasses a wide range of track and field disciplines spanning multiple categories, including events for Male, Female and Mixed participants.
+The selected data visualisation presents a comprehensive overview of the events and medal results from the 2025 World Athletics Championships, held in Tokyo, Japan. The competition encompasses a wide range of track and field disciplines spanning multiple categories, including events for Male, Female, and Mixed participants.
 
 The primary narrative conveyed by the visualisation is the breadth of competitive events held during the championship, as well as the medal winners for each respective event. The original visualisation is interactive in nature: upon hovering over individual data points, the viewer is presented with detailed information pertaining to that entry, including the athlete's country of representation, full name, performance score, and the date on which the event was contested.
 
-However, despite its visual appeal, the dashboard has a critical usability weakness -  it is entirely dependent on user interaction to reveal any meaningful information. At a quick glance, a viewer is unable to draw any conclusions from the visualization, as no data values are displayed directly on the bubbles themselves.
+However, despite its visual appeal, the dashboard has a critical usability weakness, it is entirely dependent on user interaction to reveal any meaningful information. At a quick glance, a viewer is unable to draw any conclusions from the visualisation, as no data values are displayed directly on the bubbles themselves.
 
-For example, if a user wanted to determine which country won the most total medals, they would need to hover over every single bubble within the top 3 ranking positions and manually tally the counts in their head. There are no summary statistics, no persistent labels, and no pre-aggregated views to support this basic analytical question. This design forces the user to become the engine of the analysis, sequentially exploring data point by data point which leads to significant time inefficiency and cognitive overload, particularly when dealing with 49 events each containing up to 8 ranked athletes
+For example, if a user wanted to determine which country won the most total medals, they would need to hover over every single bubble within the top 3 ranking positions and manually tally the counts in their head. There are no summary statistics, no persistent labels and no pre-aggregated views to support this basic analytical question. This design forces the user to become the engine of the analysis, sequentially exploring data point by data point, leading to significant time inefficiency and cognitive overload, particularly when dealing with 49 events each containing up to 8 ranked athletes.
 
-Originally published on Tableau Public, the visualisation is designed to allow users to explore the championship results at a granular level, with a focus on individual athlete performances across the various events.
 ![Original Visualisation](original_visualisation.png)
 
-Reference: [World Athletics Championships 2025, Tokyo — Tableau Public](https://public.tableau.com/app/profile/joelreed/viz/WorldAthleticsChampionships2025Tokyo/WorldAthleticsChampionships2025Tokyo)
+**Reference:** [World Athletics Championships 2025, Tokyo — Tableau Public](https://public.tableau.com/app/profile/joelreed/viz/WorldAthleticsChampionships2025Tokyo/WorldAthleticsChampionships2025Tokyo)
 
 ---
 
@@ -50,24 +49,24 @@ Reference: [World Athletics Championships 2025, Tokyo — Tableau Public](https:
 
 ### Strengths
 
-- Aesthetic coherence: The visualisation is visually well-crafted and thematically consistent with the subject matter, adopting a track-inspired design that aligns appropriately with the nature of a track and field competition.
+- **Aesthetic coherence:** The visualisation is visually well-crafted and thematically consistent with the subject matter, adopting a track-inspired design that aligns appropriately with the nature of a track and field competition.
 
-- Interactive data exploration: The chart supports hover interactions that surface detailed athlete-level information, including name, country of representation, performance score, and ranking position (top 8 per event).
+- **Interactive data exploration:** The chart supports hover interactions that surface detailed athlete-level information, including name, country of representation, performance score, and ranking position (top 8 per event).
 
-- Event categorisation: All championship events are present within the visualisation and are logically grouped into broader event categories such as sprints, throwing events, and jumping events, facilitating high-level browsing.
+- **Event categorisation:** All championship events are present within the visualisation and are logically grouped into broader event categories such as sprints, throwing events, and jumping events, facilitating high-level browsing.
 
-- Breadth of coverage: The visualization encompasses all 49 events across men's and women's disciplines, representing 53 nations in a single cohesive dashboard.
-
+- **Breadth of coverage:** The visualisation encompasses all 49 events across men's, women's and mixed disciplines in a single cohesive dashboard.
 
 ### Weaknesses
-- Absence of at-a-glance insights: At first glance, the visualisation does not convey any meaningful conclusion to the viewer. All substantive information is locked behind user interaction with individual data points, which encode the following dimensions: Event Type (Male/Female/Mixed), Event Name (e.g., 100m, 200m) and Country.
 
-- High cognitive load for aggregated queries: Determining which country won the highest total number of medals, for example, requires the user to hover over every data point within the top three ranking positions and manually tally the results. This imposes substantial time inefficiency and cognitive overload on the viewer.
+- **Absence of at-a-glance insights:** At first glance, the visualisation does not convey any meaningful conclusion to the viewer. All substantive information is locked behind user interaction with individual data points, which encode the following dimensions: Event Type (Male/Female/Mixed), Event Name (e.g., 100m, 200m), and Country.
 
-- Full interactivity dependency: The visualisation is entirely dependent on user interaction to surface data, offering no passive or summary-level view. This design choice significantly limits its effectiveness as a standalone analytical communication tool.
+- **High cognitive load for aggregated queries:** Determining which country won the highest total number of medals, for example, requires the user to hover over every data point within the top three ranking positions and manually tally the results. This imposes substantial time inefficiency and cognitive overload on the viewer.
+
+- **Full interactivity dependency:** The visualisation is entirely dependent on user interaction to surface data, offering no passive or summary-level view. This design choice significantly limits its effectiveness as a standalone analytical communication tool.
 
 <br/>
-While the original visualisation has great aesthetic presentation and interactive exploration, it lacks the analytical hierarchy, making it hard to compare the data easily. As a result, viewers are required to manually extract the insights which limits the effectiveness of the visualisation.
+While the original visualisation has great aesthetic presentation and supports interactive exploration, it lacks analytical hierarchy, making it hard to compare data easily. As a result, viewers are required to manually extract insights, which limits the overall effectiveness of the visualisation.
 
 ---
 
@@ -77,36 +76,89 @@ The following improvements are proposed to enhance the analytical clarity and co
 
 ### Country-Level Medal Overview
 
-- Objective: Provide a broader, summary-level view of total medal counts across competing nations.
-- Problem Addressed: Prevents the viewer from becoming overwhelmed by granular data without first establishing the overall competitive landscape.
-- Value Delivered: By anchoring the viewer's attention to a high-level medal count comparison, the visualisation provides essential context before presenting event-specific detail. The audience can readily identify the leading nations before exploring individual performance data, transforming the chart from a technical reference into a coherent competitive narrative.
+- **Objective:** Provide a summary-level view of total medal counts across competing nations, establishing the overall competitive landscape before presenting granular detail.
+- **Value Delivered:** The audience can readily identify leading nations at a glance, transforming the chart from a technical reference into a coherent competitive narrative.
 
 ### Country Performance by Event Type
 
-- Objective: Highlight which countries excelled in specific athletic disciplines.
-- Problem Addressed: Addresses the analytical questions of *where* and *how* national athletic success was achieved.
-- Value Delivered: Understanding which countries performed best in particular event groups (e.g., javelin, marathon) reveals the source of a nation's athletic strength. This makes the visualisation actionable and enables analysts to identify regional concentrations of talent across specific athletic disciplines.
+- **Objective:** Highlight which countries excelled in specific athletic disciplines, addressing the analytical questions of *where* and *how* national success was achieved.
+- **Value Delivered:** Revealing which countries dominated particular event groups (e.g., Javelin, Marathon) exposes the source of each nation's athletic strength and enables identification of regional talent concentrations.
 
 ### Event Performance Breakdown by Gender
 
-- Objective: Illustrate the distribution of competitive performance across Male, Female and Mixed event categories.
-- Problem Addressed: Adds analytical depth by addressing the question of *why* certain patterns in national or event-level performance emerge.
-- Value Delivered: Moving beyond simple rankings, this dimension reveals the health and balance of national athletic programmes. Notable patterns may include smaller nations achieving disproportionate success in female-category events, or dominant sporting nations extending their strength into the newly integrated mixed relay disciplines.
-
+- **Objective:** Illustrate performance distribution across Male, Female, and Mixed categories to address *why* certain national patterns emerge.
+- **Value Delivered:** This dimension reveals the balance of national athletic programmes — including whether smaller nations show disproportionate strength in specific gender categories, or dominant nations extend into Mixed relay disciplines.
 
 The table below summarises the key differences between the original Tableau dashboard and our proposed visualisation.
 
 | Analytical Aspect | Original Visualisation | Proposed Redesign | Key Improvement |
 |------------------|-----------------------|------------------|----------------|
-| Primary Perspective | Event-centric (individual athlete results) | Country-centric (aggregated medal counts) | Shifts focus from micro-level exploration to macro-level comparison | 
-| Starting Point | No clear starting point as all events are shown simultaneously | Country-level medal overview presented first | Establishes analytical hierarchy | 
-| Medal Comparison Across Countries | Requires manual hovering and mental tallying | Direct comparison via stacked bar chart | Enables immediate at-a-glance insight | 
-| Event Discipline Analysis | Events displayed individually without structured aggregation | Events grouped into broader categories (running, jumping, throwing, combined) | Reveals national specialisation patterns | 
-|**Gender-Based Comparison** | Gender differences inferred through manual exploration | Faceted layout (Male/Female/Mixed × Country) | Enables structured, systematic gender comparison | 
-| Information Accessibility | Fully dependent on interactive hover tooltips | All medal counts visible without interaction | Reduces cognitive load and improves static readability |
-|**Perceptual Encoding** | Bubble area encoding (low precision for comparison) | Bar length encoding (high perceptual accuracy) | Improves quantitative comparability | 
-| Cognitive Load | High — sequential inspection required | Lower — structured grid supports parallel comparison | Enhances analytical efficiency |
-| Analytical Depth | Descriptive (who won which event) | Comparative (where dominance occurs and how performance is distributed) | Adds explanatory dimension (where & why) |
+| Primary Perspective | Event-centric (individual athlete results) | Country-centric (aggregated medal counts) | Shifts focus from micro-level exploration to macro-level comparison |
+| Medal Comparison | Requires manual hovering and mental tallying | Direct comparison via stacked bar chart | Enables immediate at-a-glance insight |
+| Event Discipline Analysis | Events displayed individually without grouping | Events grouped into Running, Jumping, Throwing, Combined | Reveals national specialisation patterns |
+| Gender-Based Comparison | Gender differences inferred through manual exploration | Faceted layout (Male/Female/Mixed × Country) | Enables structured, systematic gender comparison |
+| Perceptual Encoding | Bubble area encoding (low precision) | Bar length encoding (high perceptual accuracy) | Improves quantitative comparability |
+| Information Accessibility | Fully dependent on interactive hover tooltips | All medal counts visible without interaction | Reduces cognitive load, improves static readability |
+
+### Visualisation Type Exploration: R&D and Brainstorming
+
+Before settling on the final design, several candidate visualisation types were evaluated against the analytical requirements of this project. The following outlines each option considered, including the reasoning for or against adoption.
+
+#### Stacked Bar Chart *(Selected)*
+
+A stacked bar chart displays total medal counts per country segmented by medal type (Gold, Silver, Bronze), with faceting by gender category and event group.
+
+- **Strengths:** Enables direct country-to-country comparison at a glance. Bar length encoding is highly accurate for quantitative judgement compared to area or angle encodings. Faceting by event group and gender adds analytical depth without cluttering a single panel. Medal counts can be labelled directly on each segment, eliminating the need for interaction.
+- **Considerations:** When medal counts per segment are very small (e.g., 1–2), stacked segments become thin and hard to read. Comparing individual medal type proportions across countries requires more effort than comparing totals.
+
+#### Heatmap
+
+A heatmap uses a colour gradient to encode medal counts across a Country × Event Group matrix with separate panels per gender.
+
+- **Strengths:** Compact and effective for spotting patterns across many countries and event groups simultaneously. Immediately reveals concentrations of national strength (e.g., Kenya dominating Running events).
+- **Considerations:** Colour gradient encoding is less perceptually precise than bar length, making exact comparisons difficult. Readers cannot easily determine whether a dark cell represents 3 medals or 6. Does not naturally distinguish between Gold, Silver, and Bronze without additional encoding layers.
+
+#### Grouped Bar Chart
+
+A grouped bar chart places Gold, Silver, and Bronze bars side-by-side for each country, rather than stacking them.
+
+- **Strengths:** Makes it easier to compare individual medal types (e.g., who won the most Golds) across countries without requiring mental decomposition of a stacked bar.
+- **Considerations:** Becomes visually cluttered quickly when faceted across multiple event groups and gender categories. The overall total medal count per country is harder to read compared to a stacked layout, as it requires summing three separate bars mentally.
+
+#### Dot Plot 
+
+A dot plot displays medal counts as positioned dots along a common axis, ordered by count, with one row per country.
+
+- **Strengths:** Clean and minimal. Highly effective for ranking comparisons. Avoids the visual weight of bars while maintaining positional encoding accuracy.
+- **Considerations:** Less intuitive for general audiences unfamiliar with the format. Stacking medal types (Gold, Silver, Bronze) as separate dot series on the same axis can become hard to parse. Faceting across event groups and gender adds complexity that this format handles less gracefully than bar charts.
+
+---
+
+## Proposed Visualisation
+
+The proposed redesign takes the form of a faceted stacked bar chart built using ggplot2. The chart is structured as a grid where columns represent the top 4 countries by total medal count and rows represent gender categories (Male, Female, Mixed). Within each panel, the x-axis displays the four sport groups (Running, Jumping, Throwing, Combined), and bars are stacked and colour-coded by medal type (Gold, Silver, Bronze). Medal counts are labelled directly on each bar segment and vertical dashed lines separate the sport groups within each panel for visual clarity.
+
+This layout allows the reader to make three types of comparison simultaneously without any interaction: overall medal volume by country, national specialisation by sport group, and performance patterns across gender categories. The design prioritises static readability over interactivity, ensuring that all key insights are visible at a glance.
+
+### Dimensions of the Original Visualisation
+
+| Dimension | Description |
+|---|---|
+| Ranking | Finishing position (1st, 2nd, 3rd, etc.) |
+| Gender Category | Male, Female, or Mixed |
+| Event Name | e.g., 100m, 200m, Long Jump |
+| Event Group | e.g., Jumping, Sprints, Throwing |
+| Country | Country of representation |
+
+### Proposed Visualisation Dimensions
+
+| Axis | Mapped Variable |
+|---|---|
+| X-Axis | Event Group (Running, Jumping, Throwing, Combined) |
+| Y-Axis | Number of Medals |
+| Facet Columns | Country (top 4 by total medal count) |
+| Facet Rows | Gender Category (Male, Female, Mixed) |
+| Fill Colour | Medal Type (Gold, Silver, Bronze) |
 
 ---
 
@@ -114,7 +166,7 @@ The table below summarises the key differences between the original Tableau dash
 
 All data were sourced directly from the official [World Athletics Championships website](https://worldathletics.org/competitions/world-athletics-championships/world-athletics-championships-tokyo-2025-7190593). Results were collected via manual web scraping and subsequently compiled into a structured spreadsheet for analysis.
 
-The dataset encompasses all medal results for each event held during the 2025 championship, including athlete name, country of representation, performance score, ranking position, event name, gender category, and competition date. Sport group classifications are derived programmatically within the visualisation pipeline and are not stored in the raw dataset.
+The dataset encompasses all medal results for each event held during the 2025 championship, including athlete name, country of representation, performance score, ranking position, event name, gender category, and competition date. Country name resolution and sport group classifications are applied programmatically within the data processing code chunk of this document and are not stored in the raw dataset.
 
 ---
 
@@ -126,11 +178,11 @@ The following steps outline the end-to-end data engineering pipeline employed to
 
 2. Collect raw data from the official [World Athletics Championships website](https://worldathletics.org/competitions/world-athletics-championships/world-athletics-championships-tokyo-2025-7190593) via structured web scraping.
 
-3. Define the scope of the dataset, confirming which events, ranking positions, and athlete attributes are required for the proposed visualisation.
+3. Define the scope of the dataset, confirming which events, ranking positions and athlete attributes are required for the proposed visualisation.
 
-4. Perform initial data cleaning to remove duplicate entries, handle missing values (`NA`), and ensure consistent formatting across all fields.
+4. Perform initial data cleaning to remove duplicate entries, handle missing values (`NA`) and ensure consistent formatting across all fields.
 
-5. Athletic events are categorised into higher-level sport groups (e.g., Running, Jumping, Throwing, Combined) via a `case_when()` transformation applied within the R visualisation pipeline, as the raw dataset contains individual event names only. The following table outlines the full event-to-group mapping applied:
+5. Country codes are converted to full country names using the `countrycode` R package (`origin = "ioc"`) and athletic events are categorised into higher-level sport groups via a `case_when()` transformation. Both transformations are applied within the data processing code chunk in this document. The following table outlines the full event-to-group mapping applied:
 
 | Sport Group | Events Included |
 |---|---|
@@ -141,46 +193,30 @@ The following steps outline the end-to-end data engineering pipeline employed to
 
 6. Validate and cross-reference the cleaned dataset against official championship results to ensure accuracy and completeness.
 
-7. Export the cleaned dataset in CSV format for use within the Quarto Markdown (.qmd) visualisation pipeline. Medal tallies by country, gender category, and event group are subsequently computed within the R visualisation code using group_by(), summarise(), and expand.grid() transformations at render time.
+7. Medal tallies by country, gender category, and event group are computed within the visualisation code chunk using `group_by()`, `summarise()`, and `expand.grid()` transformations at render time.
 
+### Data Processing
 
+The code chunk below loads the raw dataset and applies all cleaning and transformation steps, including country name resolution and sport group classification.
 
-### Dimensions of the Original Visualisation
-| Dimension | Description |
-|---|---|
-| Ranking | Finishing position (1st, 2nd, 3rd, etc.) |
-| Gender Category | Male, Female, or Mixed |
-| Event Name | e.g., 100m, 200m, Long Jump |
-| Event Group | e.g., Jumping, Sprints, Throwing |
-| Country | Country of representation |
-
-### Proposed Visualisation Dimensions
-
-| Axis  | Mapped Variable |
-|---|---|
-| X-Axis | Event Group (Running, Jumping, Throwing, Combined) |
-| Y-Axis | Number of Medals |
-| Facet Columns | Country (top 4 by total medal count) |
-| Facet Rows | Gender Category (Male, Female, Mixed)|
-| Fill Colour | Medal Type (Gold, Silver, Bronze) |
-
-> **Note:** Individual athletic events are mapped to one of four sport groups (Running, Jumping, Throwing, Combined) within the R visualisation pipeline. Refer to the sport group classification table in the Detailed Workflow section for the full event-to-group mapping.
-
----
-
-## Proposed Visualisation
-
-The code chunk below produces the proposed visualisation using ggplot2. It reads from the cleaned dataset, aggregates medal counts by country, medal type, gender category, and event group, and renders a faceted stacked bar chart.
-
-```{r}
-library(ggplot2)
+```{r data-processing}
 library(dplyr)
-library(tidyr)
+library(countrycode)
 
-# ── 1. Load data ──────────────────────────────────────────────────────────────
+# Load raw data 
 data <- read.csv("wac_2025_medalists.csv")
 
-# ── 2. Prepare: event groups, gender labels, medal types ─────────────────────
+# Convert country codes to full names 
+# Uses IOC 3-letter codes (the standard used in athletics competitions)
+data <- data |>
+  mutate(
+    COUNTRY = case_when(
+      COUNTRY == "ART" ~ "Refugee Athletic Team",
+      TRUE ~ countrycode(COUNTRY, origin = "ioc", destination = "country.name")
+    )
+  )
+
+# Map events to sport groups
 data <- data |>
   mutate(
     EventGroup = case_when(
@@ -196,152 +232,7 @@ data <- data |>
                    "HAMMER THROW", "JAVELIN THROW")                      ~ "Throwing",
       EVENT %in% c("DECATHLON", "HEPTATHLON")                           ~ "Combined",
       TRUE ~ "Other"
-    ),
-    GenderLabel = case_when(
-      MIXED == 1    ~ "Mixed",
-      GENDER == "M" ~ "Male",
-      GENDER == "F" ~ "Female",
-      TRUE          ~ as.character(GENDER)
-    ),
-    MedalType = case_when(
-      POSITION == 1 ~ "Gold",
-      POSITION == 2 ~ "Silver",
-      POSITION == 3 ~ "Bronze",
-      TRUE          ~ NA_character_
     )
-  )
-
-# ── 3. Keep medals only ───────────────────────────────────────────────────────
-medals <- data |> filter(!is.na(MedalType))
-
-# ── 4. Top 3 countries by total medal count ───────────────────────────────────
-top4 <- medals |>
-  group_by(COUNTRY) |>
-  summarise(Total = n(), .groups = "drop") |>
-  slice_max(Total, n = 4) |>
-  pull(COUNTRY)
-
-# ── 5. Build complete grid: every event × every gender × every country ─────── 
-# This ensures all events appear even when a country won nothing in that event
-all_events <- medals |>
-  filter(COUNTRY %in% top4) |>
-  pull(EVENT) |>
-  unique() |>
-  sort()
-
-all_genders <- c("Male", "Female", "Mixed")
-
-full_grid <- expand.grid(
-  COUNTRY     = top4,
-  GenderLabel = all_genders,
-  EVENT       = all_events,
-  MedalType   = c("Gold", "Silver", "Bronze"),
-  stringsAsFactors = FALSE
-)
-
-# Aggregate actual medal counts
-actual <- medals |>
-  filter(COUNTRY %in% top4) |>
-  group_by(COUNTRY, GenderLabel, EVENT, MedalType) |>
-  summarise(Medals = n(), .groups = "drop")
-
-# Join so missing combinations become 0
-plot_data <- full_grid |>
-  left_join(actual, by = c("COUNTRY", "GenderLabel", "EVENT", "MedalType")) |>
-  replace_na(list(Medals = 0)) |>
-  # Re-attach EventGroup for labelling
-  left_join(
-    data |> select(EVENT, EventGroup) |> distinct(),
-    by = "EVENT"
-  ) |>
-  mutate(
-    MedalType   = factor(MedalType,   levels = c("Gold", "Silver", "Bronze")),
-    GenderLabel = factor(GenderLabel, levels = c("Male", "Female", "Mixed")),
-    COUNTRY     = factor(COUNTRY,     levels = top4),
-    EVENT       = factor(EVENT,       levels = all_events)
-  )
-
-# ── 6. Actual gold / silver / bronze colours ──────────────────────────────────
-medal_colours <- c(
-  "Gold"   = "#FFD700",
-  "Silver" = "#A8A9AD",
-  "Bronze" = "#CD7F32"
-) # ── 7. Plot ───────────────────────────────────────────────────────────────────
-ggplot(plot_data,
-  aes(x = EventGroup, y = Medals, fill = MedalType)
-  ) +
-  geom_col(width = 0.7, position = "stack"
-  ) +
-  geom_text(
-    data = plot_data |>
-      group_by(COUNTRY, GenderLabel, EventGroup, MedalType) |>
-      summarise(Medals = sum(Medals), .groups = "drop"),
-    aes(label = ifelse(Medals > 0, Medals, "")),
-    position = position_stack(vjust = 0.5),
-    size = 2,
-    colour = "black"
-  ) +
-  # Vertical dashed lines to separate event groups
-  geom_vline(
-    xintercept = c(1.5, 2.5, 3.5),
-    colour = "#cccccc",
-    linewidth = 0.4,
-    linetype = "dashed"
-  ) +
-  # Equal column widths: fixed scales so every panel has the same x-axis
-  facet_grid(
-    rows = vars(GenderLabel),
-    cols = vars(COUNTRY)
-  ) +
-  scale_fill_manual(values = medal_colours, name = "Medal") +
-  scale_y_continuous(
-    expand = expansion(mult = c(0, 0.15)),
-    breaks = scales::pretty_breaks(n = 4)
-  ) +
-  labs(
-    title = "World Athletics 2025 — Medals by Country",
-    subtitle = "Top 4 countries by total medal count",
-    x = NULL,
-    y = "Medals"
-  ) +
-  theme_minimal(base_size = 11) +
-  theme(
-    # White background
-    plot.background    = element_rect(fill = "white", colour = NA),
-    panel.background   = element_rect(fill = "white", colour = NA),
-    #strip.background   = element_rect(fill = "#f0f0f0", colour = NA),
-
-    # Grid lines — light grey horizontal only
-    panel.grid.major.y = element_line(colour = "#e0e0e0"),
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor   = element_blank(),
-
-    # Panel spacing — adds visible gaps between facets
-    panel.spacing.x    = unit(1, "lines"),
-    panel.spacing.y    = unit(1, "lines"),
-
-    # Black text
-    text               = element_text(colour = "black"),
-    axis.text          = element_text(colour = "#333333", size = 7),
-    axis.text.x        = element_text(angle = 50, hjust = 1, size = 6.5),
-    axis.title.y       = element_text(size = 9, margin = margin(r = 8)),
-    strip.text.x       = element_text(face = "bold", colour = "black", size = 10),
-    strip.text.y       = element_text(face = "bold", colour = "black", size = 9,
-                                      angle = 0),
-
-    # Title
-    plot.title         = element_text(face = "bold", size = 13, colour = "black"),
-    plot.subtitle      = element_text(size = 9, colour = "#555555",
-                                      margin = margin(b = 12)),
-    plot.margin        = margin(t = 16, r = 16, b = 16, l = 16),
-
-    # Legend
-    legend.position    = "right",
-    legend.title       = element_text(face = "bold", size = 9),
-    legend.text        = element_text(size = 9),
-    legend.key         = element_rect(fill = "white", colour = NA)
-    
-    
   )
 ```
 
@@ -349,22 +240,25 @@ ggplot(plot_data,
 
 ## Data Analysis
 
-### Country-level analysis of the aggregated medal dataset provides a clearer narrative of national athletic performance across the 2025 World Athletics Championships.
+### Country-Level Analysis
 
-- The USA holds the highest total medal count among the top four nations, which demonstrates its broad competitive strength across multiple event groups.
+Country-level analysis of the aggregated medal dataset provides a clearer narrative of national athletic performance across the 2025 World Athletics Championships.
 
-- Kenya's medal distribution is highly concentrated in Running events, which indicates a national specialisation rather than diversified athletic strength.
+- **United States** holds the highest total medal count among the top four nations, demonstrating broad competitive strength across multiple event groups.
 
-- Gold medal ratios indicate that Kenya produces a high proportion of top-tier performances relative to its total medal count, which suggests a focus on elite performance in selected disciplines.
+- **Kenya's** medal distribution is highly concentrated in Running events, indicating a national specialisation rather than diversified athletic strength.
 
-### Gender-level analysis shows significant difference in medal concetration.
+- Kenya's Gold medal ratio is notably high relative to its total medal count, suggesting a focus on elite performance in selected disciplines rather than broad podium participation.
 
-- The USA demonstrates a more balanced medal distribution across Male and Female categories.
+### Gender-Level Analysis
 
-- Kenya's medal distribution shows stronger representation in specific gender-event combinations within the Running event.
+Gender-level analysis reveals significant differences in medal concentration across countries.
 
-- Mixed-category events contribute to a smaller proportion of medals across the top four countries.
+- The **United States** demonstrates a more balanced medal distribution across Male and Female categories.
 
+- **Kenya's** medal distribution shows stronger representation in specific gender-event combinations within Running events.
+
+- Mixed-category events contribute a smaller proportion of medals across all four top-ranked countries.
 
 ---
 
@@ -372,8 +266,8 @@ ggplot(plot_data,
 
 | Name | Student ID | Contribution |
 |---|---|---|
-| Goh Jason Fadil | 2502643 | |
-| Venus Low | 2503741 | |
-| Choong Wan Qin | 2402311 | |
-| Chi Wei Seng | 2401493 | |
-| Koh Soon Chuan | 2400951 | |
+| Goh Jason Fadil | 2502643 | Researched and evaluated candidate visualisation types, identified strengths and considerations for each approach to inform the final design selection |
+| Venus Low | 2503741 | Documented strengths and weaknesses of the original visualisation, conducted data analysis and drafted analytical commentary |
+| Choong Wan Qin | 2402311 | Identified and sourced the dataset, performed web scraping and data processing including country name resolution and sport group classification |
+| Chi Wei Seng | 2401493 | Documented strengths and weaknesses of the original visualisation, contributed to the analytical assessment of the original design |
+| Koh Soon Chuan | 2400951 | Researched and evaluated candidate visualisation types, contributed to the visualisation design rationale |
