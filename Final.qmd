@@ -77,28 +77,26 @@ The following improvements are proposed to enhance the analytical clarity and co
 ### Country-Level Medal Overview
 
 - **Objective:** Provide a summary-level view of total medal counts across competing nations, establishing the overall competitive landscape before presenting granular detail.
-- **Value Delivered:** The audience can readily identify leading nations at a glance, transforming the chart from a technical reference into a coherent competitive narrative.
+- **How it addresses Weakness 1:** By surfacing aggregated medal counts directly on the chart, without requiring any hover interaction, the audience can immediately identify leading nations at a glance. This transforms the chart from a passive reference tool into an active competitive narrative.
 
 ### Country Performance by Event Type
 
 - **Objective:** Highlight which countries excelled in specific athletic disciplines, addressing the analytical questions of *where* and *how* national success was achieved.
-- **Value Delivered:** Revealing which countries dominated particular event groups (e.g., Javelin, Marathon) exposes the source of each nation's athletic strength and enables identification of regional talent concentrations.
+- **How it addresses Weakness 2:** Aggregating medal counts by event group (Running, Jumping, Throwing, Combined) and encoding them visually as stacked bar segments eliminates the need for manual tallying. Viewers can compare national medal totals across disciplines with a single glance, without any hover interaction.
 
 ### Event Performance Breakdown by Gender
 
 - **Objective:** Illustrate performance distribution across Male, Female, and Mixed categories to address *why* certain national patterns emerge.
-- **Value Delivered:** This dimension reveals the balance of national athletic programmes — including whether smaller nations show disproportionate strength in specific gender categories, or dominant nations extend into Mixed relay disciplines.
+- **How it addresses Weakness 3:** Faceting the stacked bar chart by gender category (Male, Female, Mixed) makes cross-gender comparisons immediate and systematic. Viewers can see at once whether a country's dominance is driven by its male or female athletes, or whether it extends into mixed relay disciplines.
 
-The table below summarises the key differences between the original Tableau dashboard and our proposed visualisation.
+The table below summarises the direct mapping between each identified weakness and its corresponding improvement, as well as the key analytical impact.
 
-| Analytical Aspect | Original Visualisation | Proposed Redesign | Key Improvement |
-|------------------|-----------------------|------------------|----------------|
-| Primary Perspective | Event-centric (individual athlete results) | Country-centric (aggregated medal counts) | Shifts focus from micro-level exploration to macro-level comparison |
-| Medal Comparison | Requires manual hovering and mental tallying | Direct comparison via stacked bar chart | Enables immediate at-a-glance insight |
-| Event Discipline Analysis | Events displayed individually without grouping | Events grouped into Running, Jumping, Throwing, Combined | Reveals national specialisation patterns |
-| Gender-Based Comparison | Gender differences inferred through manual exploration | Faceted layout (Male/Female/Mixed × Country) | Enables structured, systematic gender comparison |
-| Perceptual Encoding | Bubble area encoding (low precision) | Bar length encoding (high perceptual accuracy) | Improves quantitative comparability |
-| Information Accessibility | Fully dependent on interactive hover tooltips | All medal counts visible without interaction | Reduces cognitive load, improves static readability |
+| # | Weakness (Section 2.2) | Improvement (Section 3) | Key Improvement |
+|---|---|---|---|
+| 1 | No at-a-glance insight, all data hidden behind hover | Country-Level Medal Overview with direct labels | Enables immediate understanding of national standings without interaction |
+| 2 | High cognitive load for medal aggregation | Country Performance by Event Type via stacked bar | Pre-aggregated view eliminates manual tallying |
+| 3 | No discipline or gender breakdown accessible passively | Gender × Event Group faceted layout | Structured cross-gender, cross-discipline comparison without hover |
+
 
 ### Visualisation Type Exploration: R&D and Brainstorming
 
@@ -174,8 +172,21 @@ The first five rows of the raw dataset are shown below for reference:
 library(knitr)
 library(kableExtra)
 raw <- read.csv("wac_2025_medalists.csv")
-kable(head(raw, 5)) |>
+kable(head(raw, 5),
+      caption = "Table 1: First five rows of the raw dataset") |>
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
+The raw dataset contains **`r nrow(raw)` rows** and **`r ncol(raw)` columns**, covering all medal positions across the full set of championship events.
+
+```{r raw-summary}
+# Quick structural overview of the raw dataset
+cat("Dimensions:", nrow(raw), "rows ×", ncol(raw), "columns\n")
+cat("Column names:", paste(names(raw), collapse = ", "), "\n\n")
+cat("Missing values per column:\n")
+print(colSums(is.na(raw)))
+cat("\nEvent count:", length(unique(raw$EVENT)), "\n")
+cat("Unique countries:", length(unique(raw$COUNTRY)), "\n")
 ```
 
 ---
@@ -220,12 +231,13 @@ data <- read.csv("wac_2025_medalists.csv")
 
 # Convert country codes to full names
 # Uses IOC 3-letter codes (the standard used in athletics competitions)
-# ART (Refugee Athletic Team) is handled manually as it is not a standard IOC code
 data <- data |>
   mutate(
-    COUNTRY = case_when(
-      COUNTRY == "ART" ~ "Refugee Athletic Team",
-      TRUE ~ countrycode(COUNTRY, origin = "ioc", destination = "country.name")
+    COUNTRY = countrycode(
+      COUNTRY,
+      origin      = "ioc",
+      destination = "country.name",
+      custom_match = c(ART = "Refugee Athletic Team")
     )
   )
 
@@ -249,10 +261,26 @@ data <- data |>
   )
 ```
 
-The first five rows of the processed dataset are shown below for reference:
+After processing, the first five rows of the transformed dataset are shown below. Note that country codes have been resolved to full names and the `EventGroup` column has been added.
 
 ```{r show-processed}
-kable(head(data, 5)) |>
+kable(head(data, 5),
+      caption = "Table 2: First five rows of the processed dataset") |>
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
+The processing pipeline produced **`r nrow(data)` rows** across **`r length(unique(data$EventGroup))` event groups** and **`r length(unique(data$COUNTRY))` countries**. The table below summarises the medal record count per event group, confirming all events were correctly classified:
+
+```{r processing-summary}
+data |>
+  group_by(EventGroup) |>
+  summarise(
+    Events    = n_distinct(EVENT),
+    Records   = n(),
+    Countries = n_distinct(COUNTRY)
+  ) |>
+  arrange(desc(Records)) |>
+  kable(caption = "Table 3: Medal records per event group after processing") |>
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 ```
 
@@ -269,7 +297,6 @@ library(tidyr)
 library(ggiraph)
 
 # ── 1. Derive gender labels and medal types ───────────────────────────────────
-# Note: COUNTRY and EventGroup are already resolved in the data-processing chunk
 data <- data |>
   mutate(
     GenderLabel = case_when(
@@ -296,8 +323,7 @@ top4 <- medals |>
   slice_max(Total, n = 4) |>
   pull(COUNTRY)
 
-# ── 4. Build complete grid: every event × every gender × every country ────────
-# Ensures all sport groups appear even when a country won nothing in that group
+# ── 4. Build complete grid ────────────────────────────────────────────────────
 all_events <- medals |>
   filter(COUNTRY %in% top4) |>
   pull(EVENT) |>
@@ -320,14 +346,8 @@ actual <- medals |>
   group_by(COUNTRY, GenderLabel, EVENT, MedalType) |>
   summarise(Medals = n(), .groups = "drop")
 
-# ── 6. Build tooltip string from individual athlete rows ─────────────────────
-# Relay events store all team members as one concatenated string e.g.
-# "Vernon NORWOOD Jacory PATTERSON Khaleb MCRAE Rai BENJAMIN"
-# Surnames are ALL-CAPS; firstnames are Title Case.
-# We split wherever an ALL-CAPS word is followed by a Title Case word,
-# which marks the boundary between two athletes.
+# ── 6. Build tooltip ──────────────────────────────────────────────────────────
 split_names <- function(name_str) {
-  # Insert a pipe delimiter at ALLCAPS→TitleCase word boundaries
   parts <- strsplit(gsub("([A-Z\\-]+) ([A-Z][a-z])", "\\1|\\2", name_str), "\\|")[[1]]
   tools::toTitleCase(tolower(trimws(parts)))
 }
@@ -337,11 +357,7 @@ tooltip_data <- medals |>
   group_by(COUNTRY, GenderLabel, EVENT, MedalType) |>
   summarise(
     tooltip = paste(
-      paste0(
-        "<b>",
-        paste(split_names(ATHELTE), collapse = "<br/>"),
-        "</b>"
-      ),
+      paste0("<b>", paste(split_names(ATHLETE), collapse = "<br/>"), "</b>"),
       paste0("Event: ", EVENT),
       paste0("Medal: ", MedalType),
       paste0("Country: ", COUNTRY),
@@ -351,9 +367,9 @@ tooltip_data <- medals |>
     .groups = "drop"
   )
 
-# ── 7. Join everything into plot_data ────────────────────────────────────────
+# ── 7. Join into plot_data ────────────────────────────────────────────────────
 plot_data <- full_grid |>
-  left_join(actual,      by = c("COUNTRY", "GenderLabel", "EVENT", "MedalType")) |>
+  left_join(actual,       by = c("COUNTRY", "GenderLabel", "EVENT", "MedalType")) |>
   left_join(tooltip_data, by = c("COUNTRY", "GenderLabel", "EVENT", "MedalType")) |>
   replace_na(list(Medals = 0, tooltip = "")) |>
   left_join(
@@ -367,7 +383,7 @@ plot_data <- full_grid |>
     EVENT       = factor(EVENT,       levels = all_events)
   )
 
-# ── 8. Aggregate tooltip per bar segment (COUNTRY × GenderLabel × EventGroup × MedalType)
+# ── 8. Aggregate per bar segment ──────────────────────────────────────────────
 bar_data <- plot_data |>
   group_by(COUNTRY, GenderLabel, EventGroup, MedalType) |>
   summarise(
@@ -376,39 +392,52 @@ bar_data <- plot_data |>
     .groups = "drop"
   ) |>
   mutate(
-    MedalType   = factor(MedalType,   levels = c("Bronze", "Silver", "Gold")),
+    # Set levels so Bronze is at the bottom (y=0) and Gold stacks to the top
+    MedalType   = factor(MedalType,   levels = c("Gold", "Silver","Bronze" )),
     GenderLabel = factor(GenderLabel, levels = c("Male", "Female", "Mixed")),
     COUNTRY     = factor(COUNTRY,     levels = top4)
-  )
+  ) |>
+  # Sort explicitly to remove any row-order rendering bugs
+  arrange(COUNTRY, GenderLabel, EventGroup, MedalType)
 
-# ── 9. Medal colours ──────────────────────────────────────────────────────────
+# Medal colours
 medal_colours <- c(
   "Gold"   = "#FFD700",
   "Silver" = "#A8A9AD",
   "Bronze" = "#CD7F32"
 )
 
-# ── 10. Build interactive plot ────────────────────────────────────────────────
+# Build plot
 p <- ggplot(bar_data,
-  aes(x = EventGroup, y = Medals, fill = MedalType)
+    aes(x = EventGroup, y = Medals, fill = MedalType)
   ) +
   geom_col_interactive(
-    aes(tooltip = tooltip, data_id = paste(COUNTRY, GenderLabel, EventGroup, MedalType)),
+    aes(
+      tooltip = tooltip, 
+      data_id = paste(COUNTRY, GenderLabel, EventGroup, MedalType),
+      # FIX 1: Explicitly bind the grouping so ggiraph doesn't hijack it
+      group   = MedalType 
+    ),
     width = 0.7,
-    position = "stack"
+    position = position_stack() 
   ) +
   geom_text(
-    data = bar_data |> filter(Medals > 0),
-    aes(label = Medals),
-    position = position_stack(vjust = 0.5),
-    size = 2,
-    colour = "black"
+    # FIX 2: Do NOT filter the dataframe. Use NA to hide zero values. 
+    # This guarantees the stack math matches the bars exactly.
+    mapping = aes(
+      label = ifelse(Medals > 0, Medals, NA),
+      group = MedalType # Matches the column grouping perfectly
+    ),
+    position = position_stack(vjust = 0.5), 
+    size     = 3, 
+    colour   = "black",
+    na.rm    = TRUE # Silently removes the NA labels without plotting errors
   ) +
   geom_vline(
     xintercept = c(1.5, 2.5, 3.5),
-    colour = "#cccccc",
-    linewidth = 0.4,
-    linetype = "dashed"
+    colour     = "#cccccc",
+    linewidth  = 0.4,
+    linetype   = "dashed"
   ) +
   facet_grid(
     rows = vars(GenderLabel),
@@ -417,15 +446,15 @@ p <- ggplot(bar_data,
   scale_fill_manual(
     values = medal_colours,
     name   = "Medal",
-    breaks = c("Gold", "Silver", "Bronze")  # legend always shows Gold first
+    breaks = c("Gold", "Silver", "Bronze") # Keeps Gold at the top of the legend
   ) +
   scale_y_continuous(
     expand = expansion(mult = c(0, 0.15)),
     breaks = scales::pretty_breaks(n = 4)
   ) +
   labs(
-    title    = "World Athletics 2025 — Medals by Country",
-    subtitle = "Top 4 countries by total medal count — hover over bars for athlete details",
+    title    = "World Athletics 2025 - Medals by Country",
+    subtitle = "Top 4 countries by total medal count, hover over bars for athlete details",
     x        = NULL,
     y        = "Medals"
   ) +
@@ -443,11 +472,9 @@ p <- ggplot(bar_data,
     axis.text.x        = element_text(angle = 50, hjust = 1, size = 6.5),
     axis.title.y       = element_text(size = 9, margin = margin(r = 8)),
     strip.text.x       = element_text(face = "bold", colour = "black", size = 10),
-    strip.text.y       = element_text(face = "bold", colour = "black", size = 9,
-                                      angle = 0),
+    strip.text.y       = element_text(face = "bold", colour = "black", size = 9, angle = 0),
     plot.title         = element_text(face = "bold", size = 13, colour = "black"),
-    plot.subtitle      = element_text(size = 9, colour = "#555555",
-                                      margin = margin(b = 12)),
+    plot.subtitle      = element_text(size = 9, colour = "#555555", margin = margin(b = 12)),
     plot.margin        = margin(t = 16, r = 16, b = 16, l = 16),
     legend.position    = "right",
     legend.title       = element_text(face = "bold", size = 9),
@@ -455,7 +482,7 @@ p <- ggplot(bar_data,
     legend.key         = element_rect(fill = "white", colour = NA)
   )
 
-# ── 11. Render as interactive girafe widget ───────────────────────────────────
+# ── 12. Render girafe ─────────────────────────────────────────────────────────
 girafe(
   ggobj = p,
   width_svg = 10,
@@ -494,14 +521,44 @@ Gender-level analysis reveals significant differences in medal concentration acr
 
 - Mixed-category events contribute a smaller proportion of medals across all four top-ranked countries.
 
+### Summary Statistics
+
+The table below provides a high-level medal count summary for the top 4 countries, broken down by medal type.
+```{r analysis-summary}
+medal_summary <- medals |>
+  filter(COUNTRY %in% top4) |>
+  group_by(COUNTRY, MedalType) |>
+  summarise(Count = n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = MedalType, values_from = Count, values_fill = 0) |>
+  select(COUNTRY, Gold, Silver, Bronze) |>
+  mutate(Total = Gold + Silver + Bronze) |>
+  arrange(desc(Total))
+
+kable(medal_summary, caption = "Table 4: Medal summary for top 4 countries") |>
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
+The United States leads with `r medal_summary$Total[1]` total medals
+(`r medal_summary$Gold[1]` Gold, `r medal_summary$Silver[1]` Silver,
+`r medal_summary$Bronze[1]` Bronze), nearly double the count of
+`r medal_summary$COUNTRY[2]` in second place with `r medal_summary$Total[2]`.
+
 ---
 
 ## Work Distribution
 
-| Name | Student ID | Contribution |
-|---|---|---|
-| Goh Jason Fadil | 2502643 | Researched and evaluated candidate visualisation types, identified strengths and considerations for each approach to inform the final design selection |
-| Venus Low | 2503741 | Documented strengths and weaknesses of the original visualisation, conducted data analysis and drafted analytical commentary |
-| Choong Wan Qin | 2402311 | Identified and sourced the dataset, performed web scraping and data processing including country name resolution and sport group classification |
-| Chi Wei Seng | 2401493 | Documented strengths and weaknesses of the original visualisation, contributed to the analytical assessment of the original design |
-| Koh Soon Chuan | 2400951 | Researched and evaluated candidate visualisation types, contributed to the visualisation design rationale |
+| Name | Student ID | Project Contribution | Presentation Contribution |
+|---|---|---|---|
+| Goh Jason Fadil | 2502643 | Researched and evaluated candidate visualisation types (heatmap, grouped bar, dot plot, stacked bar); documented strengths and considerations for each approach to inform the final design selection | Prepared presentation slides for the visualisation design rationale and type exploration sections; contributed to MP4 recording |
+| Venus Low | 2503741 | Documented strengths and weaknesses of the original visualisation; conducted data analysis and drafted the country-level and gender-level analytical commentary | Prepared presentation slides for the data analysis and insights sections; contributed to MP4 recording |
+| Choong Wan Qin | 2402311 | Identified and sourced the dataset; performed web scraping and data processing including country name resolution and sport group classification; authored data workflow documentation | Prepared presentation slides for the data source and data engineering workflow sections; contributed to MP4 recording |
+| Chi Wei Seng | 2401493 | Documented strengths and weaknesses of the original visualisation; contributed to the analytical assessment of the original design; drafted the weakness–improvement mapping table | Prepared presentation slides for the critical analysis and proposed improvements sections; contributed to MP4 recording |
+| Koh Soon Chuan | 2400951 | Researched and evaluated candidate visualisation types; contributed to the visualisation design rationale and final chart implementation | Coordinated MP4 recording logistics; prepared presentation slides for the conclusion and Q&A sections; contributed to MP4 recording |
+
+---
+
+## References
+
+World Athletics. (2025). *World Athletics Championships Tokyo 2025 — Results*. Retrieved March 27, 2026, from https://worldathletics.org/competitions/world-athletics-championships/world-athletics-championships-tokyo-2025-7190593
+
+Reed, J. (2025). *World Athletics Championships 2025, Tokyo* [Tableau Public dashboard]. Retrieved March 27, 2026, from https://public.tableau.com/app/profile/joelreed/viz/WorldAthleticsChampionships2025Tokyo/WorldAthleticsChampionships2025Tokyo
