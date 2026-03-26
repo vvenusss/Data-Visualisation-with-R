@@ -134,9 +134,19 @@ A dot plot displays medal counts as positioned dots along a common axis, ordered
 
 ## Proposed Visualisation
 
-The proposed redesign takes the form of a faceted stacked bar chart built using ggplot2. The chart is structured as a grid where columns represent the top 4 countries by total medal count and rows represent gender categories (Male, Female, Mixed). Within each panel, the x-axis displays the four sport groups (Running, Jumping, Throwing, Combined), and bars are stacked and colour-coded by medal type (Gold, Silver, Bronze). Medal counts are labelled directly on each bar segment and vertical dashed lines separate the sport groups within each panel for visual clarity.
+The proposed redesign adopts a **faceted stacked bar chart** built using ggplot2. 
 
-This layout allows the reader to make three types of comparison simultaneously without any interaction: overall medal volume by country, national specialisation by sport group, and performance patterns across gender categories. The design prioritises static readability over interactivity, ensuring that all key insights are visible at a glance.
+The chart is structured in a 3x4 grid layout where columns represent the top four countries by **total medal count** and rows represent **gender categories (Male, Female, Mixed)**. Within each panel, the x-axis displays the four sport groups (Running, Jumping, Throwing, Combined), and bars are stacked and colour-coded by medal type (Gold, Silver, Bronze), with direct value lables placed on each segment.
+
+Additionally, vertical dashed lines are used to visually separate sport groups, improving the readability.
+
+
+The redesign resolves the weaknesses observed in the original visualisationby allowing the readers to make three types of comparison simultaneously without any interaction: overall medal volume by country, national specialisation by sport group, and performance patterns across gender categories. The design prioritises static readability over interactivity, ensuring that all key insights are visible at a glance, unlike the original design, where information was hidden behind hover interactions.
+
+Moreover, the issue of high cognitive load for aggregated queries is diverted by encoding the medal counts as stacked bar segments. This removes the need for manual counting across the data points and users can visually interpret both total meadl counts and their composition in a glance.
+
+Lastly, the lack of analytical structure in the original visualisation is resolved through the use of faceting and categorical grouping. The design introduces a clear hierarchy as the chart is organised by gender-based rows and country-based columns. This design supports systematic comparison across multiple dimensions.
+
 
 ### Dimensions of the Original Visualisation
 
